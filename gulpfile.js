@@ -4,7 +4,6 @@ const del = require('del');
 const gulpCopy = require('gulp-copy');
 const nodemon = require('gulp-nodemon');
 
-// pull in the project TypeScript config
 const tsProject = ts.createProject('tsconfig.json');
 
 gulp.task('compile', () => {
