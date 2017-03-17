@@ -3,6 +3,7 @@ import * as basicAuth from 'basic-auth';
 import { ThermostatService } from "../services/thermostat";
 
 export let router = express.Router();
+let thermostatService = new ThermostatService();
 
 router.get('/', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   res.sendStatus(405);
@@ -27,8 +28,5 @@ router.post('/', (req: express.Request, res: express.Response, next: express.Nex
     return;
   }
 
-  let thermostatService = new ThermostatService();
-  thermostatService.getThermostats().then(_ => res.sendStatus(204));
-  //console.log(req.body);
-  //res.sendStatus(204);
+  thermostatService.setTemperature(req.body).then(_ => res.sendStatus(204)).catch(_ => res.sendStatus(500));
 });
