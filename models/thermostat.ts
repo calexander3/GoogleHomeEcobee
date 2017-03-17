@@ -1,0 +1,66 @@
+import { Settings, Runtime, EcobeeEvent } from "./ecobee-thermostat-response";
+
+export class Thermostat {
+    identifier: number;
+    name: string;
+    thermostatRev: number;
+    isRegistered: boolean;
+    modelNumber: string;
+    brand: string;
+    features: string;
+    lastModified: string;
+    thermostatTime: string;
+    utcTime: string;
+    alerts: any[];
+    settings: Settings;
+    runtime: Runtime;
+    events: EcobeeEvent[];
+
+    public hasHold(): boolean {
+        if (this.events && this.events.length) 
+        {
+            return this.events.some(event => (event.type === 'hold' || event.type === 'autoAway' || event.type === 'autoHome' ) && event.running);
+        }
+        return false;
+    }
+
+    public hasHeatMode(): boolean {
+        return this.settings.heatStages > 0 || this.settings.hasHeatPump;
+    };
+
+    public hasCoolMode(): boolean {
+        return this.settings.coolStages > 0 || this.settings.hasHeatPump;
+    };
+
+    public hasAuxHeatMode(): boolean {
+        return this.settings.hasHeatPump && (this.settings.hasElectric || this.settings.hasBoiler || this.settings.hasForcedAir);
+    };
+
+    public hasAutoMode(): boolean {
+        return this.settings.autoHeatCoolFeatureEnabled && this.hasCoolMode() && this.hasHeatMode();
+    };
+
+    public desiredHoldType(): string {
+        switch(this.settings.holdAction){
+        case 'nextPeriod':
+            return 'nextTransition';
+        case 'useEndTime4hour':
+            return 'holdHours';
+        case 'useEndTime2hour':
+            return 'holdHours';
+        default:
+            return 'indefinite';
+        } 
+    }
+  
+    public desiredHoldHours(): number {
+        switch(this.settings.holdAction){
+            case 'useEndTime4hour':
+                return 4;
+            case 'useEndTime2hour':
+                return 2;
+            default:
+                return null;
+        } 
+    }
+}

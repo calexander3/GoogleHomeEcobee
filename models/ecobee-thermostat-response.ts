@@ -1,3 +1,5 @@
+import { Thermostat } from "./thermostat";
+
 export interface Page {
     page: number;
     totalPages: number;
@@ -142,7 +144,7 @@ export interface Runtime {
     desiredCoolRange: number[];
 }
 
-export interface Event {
+export interface EcobeeEvent {
     type: string;
     name: string;
     running: boolean;
@@ -171,23 +173,6 @@ export interface Event {
     drRampUpTime: number;
     linkRef: string;
     holdClimateRef: string;
-}
-
-export interface Thermostat {
-    identifier: string;
-    name: string;
-    thermostatRev: string;
-    isRegistered: boolean;
-    modelNumber: string;
-    brand: string;
-    features: string;
-    lastModified: string;
-    thermostatTime: string;
-    utcTime: string;
-    alerts: any[];
-    settings: Settings;
-    runtime: Runtime;
-    events: Event[];
 }
 
 export interface Status {

@@ -7,7 +7,7 @@ export interface Settings {
     hvacMode: string;
 }
 
-export interface Thermostat {
+export interface TargetThermostat {
     settings: Settings;
 }
 
@@ -18,6 +18,6 @@ export interface Function {
 
 export interface EcobeeThermostatCommand {
     selection: Selection;
-    thermostat?: Thermostat;
+    thermostat?: TargetThermostat;
     functions?: Function[];
 }

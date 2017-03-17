@@ -1,10 +1,11 @@
 import * as Url from 'url';
 import { TokenResponse } from "../models/token-response";
 import { TemperatureRequest } from "../models/temperature-request";
-import { EcobeeThermostatResponse, Thermostat } from "../models/ecobee-thermostat-response";
+import { EcobeeThermostatResponse } from "../models/ecobee-thermostat-response";
 import { EcobeeThermostatCommand } from "../models/ecobee-thermostat-command";
 import { EcobeeResponse } from "../models/ecobee-response";
 import { ApiRequestService } from "./api-request";
+import { Thermostat } from "../models/thermostat";
 
 const ecobeeServerUrl = 'https://api.ecobee.com'; 
 const ecobeeApiEndpoint = '/1/thermostat';
@@ -57,7 +58,25 @@ export class ThermostatService{
             .then(thermostats => {
                 let targetedThermostat = thermostats.filter(t => t.name.toLowerCase() === setTemperatureRequest.thermostat.toLowerCase())[0];
                 if(targetedThermostat){
-                    apiRequestService.postContent<EcobeeThermostatCommand,EcobeeResponse>(Url.parse(`${ecobeeServerUrl}${ecobeeApiEndpoint}?format=json`))
+                    apiRequestService.postContent<EcobeeThermostatCommand,EcobeeResponse>(Url.parse(`${ecobeeServerUrl}${ecobeeApiEndpoint}?format=json`),
+                    {
+                        selection: {
+                            selectionType: "thermostats",
+                            selectionMatch: targetedThermostat.identifier
+                        },
+                        functions: [
+                            {
+                            type: "setHold",
+                            params: {
+                                holdType: targetedThermostat.desiredHoldType(), 
+                                holdHours: targetedThermostat.desiredHoldHours(),
+                                coolHoldTemp: setTemperatureRequest.temperature, 
+                                heatHoldTemp: setTemperatureRequest.temperature
+                                }
+                            }
+                        ]
+                    },
+                    accessToken)
                     .then(response => resolve(true))
                     .catch(_ => reject(false));
                 }
