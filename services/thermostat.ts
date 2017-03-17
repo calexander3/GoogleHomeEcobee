@@ -56,8 +56,9 @@ export class ThermostatService{
         return new Promise((resolve:any, reject:any) => {
             getThermostats()
             .then(thermostats => {
-                let targetedThermostat = thermostats.filter(t => t.name.toLowerCase() === setTemperatureRequest.thermostat.toLowerCase())[0];
-                if(targetedThermostat){
+                let thermostatData = thermostats.filter(t => t.name.toLowerCase() === setTemperatureRequest.thermostat.toLowerCase())[0];
+                if(thermostatData){
+                    let targetedThermostat = new Thermostat(thermostatData);
                     apiRequestService.postContent<EcobeeThermostatCommand,EcobeeResponse>(Url.parse(`${ecobeeServerUrl}${ecobeeApiEndpoint}?format=json`),
                     {
                         selection: {

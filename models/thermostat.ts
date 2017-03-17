@@ -16,6 +16,23 @@ export class Thermostat {
     runtime: Runtime;
     events: EcobeeEvent[];
 
+    constructor(seed: Thermostat){
+        this.identifier = seed.identifier;
+        this.name= seed.name;
+        this.thermostatRev= seed.thermostatRev;
+        this.isRegistered= seed.isRegistered;
+        this.modelNumber= seed.modelNumber;
+        this.brand= seed.brand;
+        this.features= seed.features;
+        this.lastModified= seed.lastModified;
+        this.thermostatTime= seed.thermostatTime;
+        this.utcTime= seed.thermostatTime;
+        this.alerts= seed.alerts;
+        this.settings= seed.settings;
+        this.runtime= seed.runtime;
+        this.events= seed.events;
+    }
+
     public hasHold(): boolean {
         if (this.events && this.events.length) 
         {
