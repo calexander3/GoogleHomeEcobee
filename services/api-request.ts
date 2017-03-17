@@ -67,7 +67,6 @@ export class ApiRequestService{
                 });
             });
             request.on('error', (err: any) => reject(err));
-            console.log(postDataString);
             if (postDataString) {
                 request.write(postDataString)
             };

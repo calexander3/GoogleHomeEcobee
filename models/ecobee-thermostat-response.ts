@@ -8,7 +8,7 @@ export interface Page {
 }
 
 export interface Settings {
-    hvacMode: string;
+    hvacMode: 'heat' | 'auxHeatOnly' | 'cool' | 'auto' | 'off';
     lastServiceDate: string;
     serviceRemindMe: boolean;
     monthsBetweenService: number;

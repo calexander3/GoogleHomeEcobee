@@ -80,4 +80,30 @@ export class Thermostat {
                 return null;
         } 
     }
+
+    public isHeatOn(): boolean {
+        let heatDisabled: boolean;
+        this.events.forEach(function(event){
+            if(event.running){
+                if(event.isHeatOff){
+                    heatDisabled = true;
+                }
+            }
+        });
+
+        return !heatDisabled && (this.settings.hvacMode === 'heat' || this.settings.hvacMode === 'auxHeatOnly' || this.settings.hvacMode === 'auto')
+    }
+
+    public isCoolOn(): boolean {
+        let coolDisabled: boolean;
+        this.events.forEach(function(event){
+            if(event.running){
+                if(event.isCoolOff){
+                    coolDisabled = true;
+                }
+            }
+        });
+
+        return !coolDisabled && (this.settings.hvacMode === 'cool' || this.settings.hvacMode === 'auto')
+    }
 }

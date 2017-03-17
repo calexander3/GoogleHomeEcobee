@@ -52,13 +52,42 @@ function getThermostats (): Promise<Thermostat[]>{
 
 export class ThermostatService{
 
-    setTemperature = function (setTemperatureRequest: TemperatureRequest): Promise<boolean>{
+    public setTemperature(setTemperatureRequest: TemperatureRequest): Promise<boolean> {
         return new Promise((resolve:any, reject:any) => {
             getThermostats()
             .then(thermostats => {
                 let thermostatData = thermostats.filter(t => t.name.toLowerCase() === setTemperatureRequest.thermostat.toLowerCase())[0];
                 if(thermostatData){
                     let targetedThermostat = new Thermostat(thermostatData);
+                    let coolOn = targetedThermostat.isCoolOn();
+                    let heatOn = targetedThermostat.isHeatOn();
+
+                    if (!coolOn && !heatOn) {
+                        console.error('Hvac system is off');
+                        reject(false);
+                    }
+                    
+                    let coolHold: number | string;
+                    let heatHold: number | string;
+
+                    if (coolOn && heatOn) {
+                        if (Math.abs(targetedThermostat.runtime.actualTemperature - targetedThermostat.runtime.desiredCool) >
+                            Math.abs(targetedThermostat.runtime.actualTemperature - targetedThermostat.runtime.desiredHeat)) {
+                                coolHold = targetedThermostat.runtime.desiredCool;
+                                heatHold = setTemperatureRequest.temperature * 10;
+                            }
+                            else
+                            {
+                                coolHold = setTemperatureRequest.temperature * 10;
+                                heatHold = targetedThermostat.runtime.desiredHeat;
+                            }
+                    } 
+                    else
+                    {
+                        coolHold = coolOn ? setTemperatureRequest.temperature * 10 : 'Off';
+                        heatHold = heatOn ? setTemperatureRequest.temperature * 10 : 'Off';
+                    }
+
                     apiRequestService.postContent<EcobeeThermostatCommand,EcobeeResponse>(Url.parse(`${ecobeeServerUrl}${ecobeeApiEndpoint}?format=json`),
                     {
                         selection: {
@@ -71,8 +100,8 @@ export class ThermostatService{
                             params: {
                                 holdType: targetedThermostat.desiredHoldType(), 
                                 holdHours: targetedThermostat.desiredHoldHours(),
-                                coolHoldTemp: setTemperatureRequest.temperature, 
-                                heatHoldTemp: setTemperatureRequest.temperature
+                                coolHoldTemp: coolHold, 
+                                heatHoldTemp: heatHold
                                 }
                             }
                         ]
@@ -86,7 +115,7 @@ export class ThermostatService{
                 }
             });
         });
-    };
+    }
 
 
 }
