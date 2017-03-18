@@ -12,7 +12,7 @@ const ecobeeServerUrl = 'https://api.ecobee.com';
 const ecobeeApiEndpoint = '/1/thermostat';
 const ecobeeTokenEndpoint = '/token'
 const ecobeeApiClientId = process.env.ECOBEE_CLIENT_ID;
-const rtLocation = process.cwd() + '../tmp/rt';
+const rtLocation = process.cwd() + '/../tmp/rt';
 let accessToken: string;
 let accessTokenExpiration: Date;
 
