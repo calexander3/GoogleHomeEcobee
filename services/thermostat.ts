@@ -1,4 +1,5 @@
 import * as Url from 'url';
+import * as fs from 'fs';
 import { TokenResponse } from "../models/token-response";
 import { TemperatureRequest } from "../models/temperature-request";
 import { EcobeeThermostatResponse } from "../models/ecobee-thermostat-response";
@@ -10,15 +11,38 @@ import { Thermostat } from "../models/thermostat";
 const ecobeeServerUrl = 'https://api.ecobee.com'; 
 const ecobeeApiEndpoint = '/1/thermostat';
 const ecobeeTokenEndpoint = '/token'
-const ecobeeApiRefreshToken = process.env.ECOBEE_REFRESH_TOKEN;
 const ecobeeApiClientId = process.env.ECOBEE_CLIENT_ID;
-var accessToken: string;
-var accessTokenExpiration: Date;
+let accessToken: string;
+let accessTokenExpiration: Date;
 
 let apiRequestService = new ApiRequestService();
 
+function saveRefreshToken(refreshToken: string): Promise<boolean> {
+    return new Promise((resolve:any, reject:any) => {
+        fs.writeFile(__dirname + "/../rt", refreshToken, function(err) {
+            if(err) {
+                console.log(err);
+                reject(false);
+            }
+            else {
+                resolve(true);
+            }
+        }); 
+    });
+}
+
+function loadRefreshToken(): string {
+    if (fs.existsSync(__dirname + "/../rt")) {
+        return fs.readFileSync(__dirname + "/../rt", { encoding: 'utf8' });
+    }
+    else {
+        return process.env.ECOBEE_REFRESH_TOKEN;
+    }
+}
+
 function ensureAccessToken(): Promise<boolean>{
     return new Promise((resolve:any, reject:any) => {
+        let ecobeeApiRefreshToken = loadRefreshToken();
         let now = new Date();
         now.setSeconds(now.getSeconds() + 60);
         if(!accessToken || !accessTokenExpiration || now > accessTokenExpiration){
@@ -26,13 +50,18 @@ function ensureAccessToken(): Promise<boolean>{
             .then(tokenResponse =>{
                 accessToken = tokenResponse.access_token;
                 accessTokenExpiration = new Date(Date.now() + (tokenResponse.expires_in * 1000));
-                resolve(true);
+                saveRefreshToken(tokenResponse.refresh_token)
+                .then(_ => resolve(true))
+                .catch(err =>{ 
+                    console.error(err);
+                    resolve(false);
+                });
             })
             .catch(err => {
                 resolve(false);
             });
         }
-        else{
+        else {
             resolve(true);
         }
     });
@@ -76,14 +105,12 @@ export class ThermostatService{
                                 coolHold = targetedThermostat.runtime.desiredCool;
                                 heatHold = setTemperatureRequest.temperature * 10;
                             }
-                            else
-                            {
+                            else {
                                 coolHold = setTemperatureRequest.temperature * 10;
                                 heatHold = targetedThermostat.runtime.desiredHeat;
                             }
                     } 
-                    else
-                    {
+                    else {
                         coolHold = coolOn ? setTemperatureRequest.temperature * 10 : 'Off';
                         heatHold = heatOn ? setTemperatureRequest.temperature * 10 : 'Off';
                     }
