@@ -12,6 +12,8 @@ const ecobeeServerUrl = 'https://api.ecobee.com';
 const ecobeeApiEndpoint = '/1/thermostat';
 const ecobeeTokenEndpoint = '/token'
 const ecobeeApiClientId = process.env.ECOBEE_CLIENT_ID;
+const currentDirectory = process.cwd();
+console.log(currentDirectory);
 let accessToken: string;
 let accessTokenExpiration: Date;
 
@@ -19,7 +21,7 @@ let apiRequestService = new ApiRequestService();
 
 function saveRefreshToken(refreshToken: string): Promise<boolean> {
     return new Promise((resolve:any, reject:any) => {
-        fs.writeFile(__dirname + '/../rt', refreshToken, function(err) {
+        fs.writeFile(currentDirectory + '/rt', refreshToken, function(err) {
             if(err) {
                 console.log(err);
                 reject(false);
@@ -32,12 +34,12 @@ function saveRefreshToken(refreshToken: string): Promise<boolean> {
 }
 
 function loadRefreshToken(): string {
-    if (fs.existsSync(__dirname + '/../rt')) {
-        console.log('Token found at ' + __dirname + '/../rt');
-        return fs.readFileSync(__dirname + '/../rt', { encoding: 'utf8' });
+    if (fs.existsSync(currentDirectory + '/rt')) {
+        console.log('Token found at ' + __dirname + '/rt');
+        return fs.readFileSync(currentDirectory + '/rt', { encoding: 'utf8' });
     }
     else {
-        console.log('No token found at ' + + __dirname + '/../rt' +'. Using seed token')
+        console.log('No token found at ' + + currentDirectory + '/rt' +'. Using seed token')
         return process.env.ECOBEE_SEED_REFRESH_TOKEN;
     }
 }
