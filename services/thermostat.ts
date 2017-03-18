@@ -7,6 +7,7 @@ import { EcobeeThermostatCommand } from "../models/ecobee-thermostat-command";
 import { EcobeeResponse } from "../models/ecobee-response";
 import { ApiRequestService } from "./api-request";
 import { Thermostat } from "../models/thermostat";
+import { DatabaseService } from "./database";
 
 export abstract  class ThermostatService {
     
@@ -14,56 +15,31 @@ export abstract  class ThermostatService {
     ecobeeApiEndpoint = '/1/thermostat';
     ecobeeTokenEndpoint = '/token'
     ecobeeApiClientId = process.env.ECOBEE_CLIENT_ID;
-    rtLocation = process.cwd() + '/../tmp/rt';
 
     accessToken: string;
     accessTokenExpiration: Date;
 
     apiRequestService = new ApiRequestService();
-
-
-    saveRefreshToken(refreshToken: string): Promise<boolean> {
-        return new Promise((resolve:any, reject:any) => {
-            if (fs.existsSync(this.rtLocation)) {
-                fs.unlinkSync(this.rtLocation);
-            }
-            fs.writeFile(this.rtLocation, refreshToken, function(err) {
-                if(err) {
-                    console.log(err);
-                    reject(false);
-                }
-                else {
-                    resolve(true);
-                }
-            }); 
-        });
-    }
-
-    loadRefreshToken(): string {
-        if (fs.existsSync(this.rtLocation)) {
-            console.log(`Token found at ${this.rtLocation}`);
-            return fs.readFileSync(this.rtLocation, { encoding: 'utf8' });
-        }
-        else {
-            console.log(`No token found at ${this.rtLocation}. Using seed token`)
-            return process.env.ECOBEE_SEED_REFRESH_TOKEN;
-        }
-    }
+    private databaseService = new DatabaseService();
 
     ensureAccessToken(): Promise<boolean>{
         return new Promise((resolve:any, reject:any) => {
             let now = new Date();
             now.setSeconds(now.getSeconds() + 60);
             if(!this.accessToken || !this.accessTokenExpiration || now > this.accessTokenExpiration){
-                let ecobeeApiRefreshToken = this.loadRefreshToken();
-                this.apiRequestService.postContent<any,TokenResponse>(Url.parse(`${this.ecobeeServerUrl}${this.ecobeeTokenEndpoint}?grant_type=refresh_token&refresh_token=${ecobeeApiRefreshToken}&client_id=${this.ecobeeApiClientId}`))
-                .then(tokenResponse =>{
-                    this.accessToken = tokenResponse.access_token;
-                    this.accessTokenExpiration = new Date(Date.now() + (tokenResponse.expires_in * 1000));
-                    this.saveRefreshToken(tokenResponse.refresh_token)
-                    .then(_ => resolve(true))
-                    .catch(err =>{ 
-                        console.error(err);
+                this.databaseService.loadRefreshToken().then(ecobeeApiRefreshToken => {
+                    this.apiRequestService.postContent<any,TokenResponse>(Url.parse(`${this.ecobeeServerUrl}${this.ecobeeTokenEndpoint}?grant_type=refresh_token&refresh_token=${ecobeeApiRefreshToken}&client_id=${this.ecobeeApiClientId}`))
+                    .then(tokenResponse =>{
+                        this.accessToken = tokenResponse.access_token;
+                        this.accessTokenExpiration = new Date(Date.now() + (tokenResponse.expires_in * 1000));
+                        this.databaseService.saveRefreshToken(tokenResponse.refresh_token)
+                        .then(_ => resolve(true))
+                        .catch(err =>{ 
+                            console.error(err);
+                            resolve(false);
+                        });
+                    })
+                    .catch(err => {
                         resolve(false);
                     });
                 })
