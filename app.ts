@@ -3,7 +3,8 @@ import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 
 import { router as index } from './routes/index';
-import { router as setTemp } from './routes/set-temperature';
+import { router as setTemperature } from './routes/set-temperature';
+import { router as changeTemperature } from './routes/change-temperature';
 
 export let app = express();
 
@@ -12,7 +13,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/', index);
-app.use('/settemperature', setTemp);
+app.use('/settemperature', setTemperature);
+app.use('/changetemperature', changeTemperature);
 
 // catch 404 and forward to error handler
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {

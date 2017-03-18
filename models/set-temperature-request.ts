@@ -1,4 +1,4 @@
-export interface TemperatureRequest {
+export interface SetTemperatureRequest {
     thermostat: string;
     temperature: number;
 }
