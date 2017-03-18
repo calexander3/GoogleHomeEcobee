@@ -19,7 +19,7 @@ let apiRequestService = new ApiRequestService();
 
 function saveRefreshToken(refreshToken: string): Promise<boolean> {
     return new Promise((resolve:any, reject:any) => {
-        fs.writeFile(__dirname + "/../rt", refreshToken, function(err) {
+        fs.writeFile(__dirname + '/../rt', refreshToken, function(err) {
             if(err) {
                 console.log(err);
                 reject(false);
@@ -32,11 +32,13 @@ function saveRefreshToken(refreshToken: string): Promise<boolean> {
 }
 
 function loadRefreshToken(): string {
-    if (fs.existsSync(__dirname + "/../rt")) {
-        return fs.readFileSync(__dirname + "/../rt", { encoding: 'utf8' });
+    if (fs.existsSync(__dirname + '/../rt')) {
+        console.log('Token found at ' + __dirname + '/../rt');
+        return fs.readFileSync(__dirname + '/../rt', { encoding: 'utf8' });
     }
     else {
-        return process.env.ECOBEE_REFRESH_TOKEN;
+        console.log('No token found at ' + + __dirname + '/../rt' +'. Using seed token')
+        return process.env.ECOBEE_SEED_REFRESH_TOKEN;
     }
 }
 

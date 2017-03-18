@@ -3,7 +3,7 @@ import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 
 import { router as index } from './routes/index';
-import { router as setTemp } from './routes/set-temp';
+import { router as setTemp } from './routes/set-temperature';
 
 export let app = express();
 
