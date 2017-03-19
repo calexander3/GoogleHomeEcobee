@@ -175,6 +175,21 @@ export interface EcobeeEvent {
     holdClimateRef: string;
 }
 
+export interface Capability {
+    id: string;
+    type: string;
+    value: string;
+}
+
+export interface RemoteSensor {
+    id: string;
+    name: string;
+    type: string;
+    code: string;
+    inUse: boolean;
+    capability: Capability[];
+}
+
 export interface Status {
     code: number;
     message: string;

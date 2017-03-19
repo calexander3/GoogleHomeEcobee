@@ -1,4 +1,4 @@
-import { Settings, Runtime, EcobeeEvent } from "./ecobee-thermostat-response";
+import { Settings, Runtime, EcobeeEvent, RemoteSensor } from "./ecobee-thermostat-response";
 
 export class Thermostat {
     identifier: number;
@@ -15,22 +15,24 @@ export class Thermostat {
     settings: Settings;
     runtime: Runtime;
     events: EcobeeEvent[];
+    remoteSensors: RemoteSensor[];
 
     constructor(seed: Thermostat){
         this.identifier = seed.identifier;
-        this.name= seed.name;
-        this.thermostatRev= seed.thermostatRev;
-        this.isRegistered= seed.isRegistered;
-        this.modelNumber= seed.modelNumber;
-        this.brand= seed.brand;
-        this.features= seed.features;
-        this.lastModified= seed.lastModified;
-        this.thermostatTime= seed.thermostatTime;
-        this.utcTime= seed.thermostatTime;
-        this.alerts= seed.alerts;
-        this.settings= seed.settings;
-        this.runtime= seed.runtime;
-        this.events= seed.events;
+        this.name = seed.name;
+        this.thermostatRev = seed.thermostatRev;
+        this.isRegistered = seed.isRegistered;
+        this.modelNumber = seed.modelNumber;
+        this.brand = seed.brand;
+        this.features = seed.features;
+        this.lastModified = seed.lastModified;
+        this.thermostatTime = seed.thermostatTime;
+        this.utcTime = seed.thermostatTime;
+        this.alerts = seed.alerts;
+        this.settings = seed.settings;
+        this.runtime = seed.runtime;
+        this.events = seed.events;
+        this.remoteSensors = seed.remoteSensors;
     }
 
     public hasHold(): boolean {

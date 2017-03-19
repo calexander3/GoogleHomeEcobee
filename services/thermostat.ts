@@ -58,7 +58,7 @@ export abstract  class ThermostatService {
             this.ensureAccessToken()
             .then(_ =>{
                 this.apiRequestService.getContent<EcobeeThermostatResponse>(
-                    Url.parse(`${this.ecobeeServerUrl}${this.ecobeeApiEndpoint}?json={"selection":{"includeAlerts":"true","selectionType":"registered","selectionMatch":"","includeEvents":"true","includeSettings":"true","includeRuntime":"true"}}`),
+                    Url.parse(`${this.ecobeeServerUrl}${this.ecobeeApiEndpoint}?json={"selection":{"includeAlerts":"true","selectionType":"registered","selectionMatch":"","includeEvents":"true","includeSettings":"true","includeRuntime":"true","includeSensors":"true"}}`),
                     this.accessToken)
                 .then(thermostatResponse => {
                     resolve(thermostatResponse.thermostatList);
