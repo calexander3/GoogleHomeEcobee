@@ -8,6 +8,13 @@ import { ChangeTemperatureRequest } from "../models/change-temperature-request";
 
 export class TemperatureService extends ThermostatService {
 
+    private convertTemp(degrees: number, useCelsius: boolean): number {
+        if(useCelsius) {
+            return Math.round(10 * (degrees* 9 / 5 + 32));
+        }
+        return degrees * 10;
+    }
+
     public setTemperature(setTemperatureRequest: SetTemperatureRequest): Promise<boolean> {
         return new Promise((resolve:any, reject:any) => {
             this.getThermostats()
@@ -30,16 +37,16 @@ export class TemperatureService extends ThermostatService {
                         if (Math.abs(targetedThermostat.runtime.actualTemperature - targetedThermostat.runtime.desiredCool) >
                             Math.abs(targetedThermostat.runtime.actualTemperature - targetedThermostat.runtime.desiredHeat)) {
                                 coolHold = targetedThermostat.runtime.desiredCool;
-                                heatHold = setTemperatureRequest.temperature * 10;
+                                heatHold = this.convertTemp(setTemperatureRequest.temperature, targetedThermostat.settings.useCelsius);
                             }
                             else {
-                                coolHold = setTemperatureRequest.temperature * 10;
+                                coolHold = this.convertTemp(setTemperatureRequest.temperature, targetedThermostat.settings.useCelsius);
                                 heatHold = targetedThermostat.runtime.desiredHeat;
                             }
-                    } 
+                    }
                     else {
-                        coolHold = coolOn ? setTemperatureRequest.temperature * 10 : 'Off';
-                        heatHold = heatOn ? setTemperatureRequest.temperature * 10 : 'Off';
+                        coolHold = coolOn ? this.convertTemp(setTemperatureRequest.temperature, targetedThermostat.settings.useCelsius) : 'Off';
+                        heatHold = heatOn ? this.convertTemp(setTemperatureRequest.temperature, targetedThermostat.settings.useCelsius) : 'Off';
                     }
 
                     this.apiRequestService.postContent<EcobeeThermostatCommand,EcobeeResponse>(Url.parse(`${this.ecobeeServerUrl}${this.ecobeeApiEndpoint}?format=json`),
@@ -93,16 +100,16 @@ export class TemperatureService extends ThermostatService {
                         if (Math.abs(targetedThermostat.runtime.actualTemperature - targetedThermostat.runtime.desiredCool) >
                             Math.abs(targetedThermostat.runtime.actualTemperature - targetedThermostat.runtime.desiredHeat)) {
                                 coolHold = targetedThermostat.runtime.desiredCool;
-                                heatHold = targetedThermostat.runtime.desiredHeat + (changeTemperatureRequest.temperatureDelta * 10);
+                                heatHold = targetedThermostat.runtime.desiredHeat + this.convertTemp(changeTemperatureRequest.temperatureDelta, targetedThermostat.settings.useCelsius);
                             }
                             else {
-                                coolHold = targetedThermostat.runtime.desiredCool + (changeTemperatureRequest.temperatureDelta * 10);
+                                coolHold = targetedThermostat.runtime.desiredCool + this.convertTemp(changeTemperatureRequest.temperatureDelta, targetedThermostat.settings.useCelsius);
                                 heatHold = targetedThermostat.runtime.desiredHeat;
                             }
                     } 
                     else {
-                        coolHold = coolOn ? targetedThermostat.runtime.desiredCool + (changeTemperatureRequest.temperatureDelta * 10) : 'Off';
-                        heatHold = heatOn ? targetedThermostat.runtime.desiredHeat + (changeTemperatureRequest.temperatureDelta * 10) : 'Off';
+                        coolHold = coolOn ? targetedThermostat.runtime.desiredCool + this.convertTemp(changeTemperatureRequest.temperatureDelta, targetedThermostat.settings.useCelsius) : 'Off';
+                        heatHold = heatOn ? targetedThermostat.runtime.desiredHeat + this.convertTemp(changeTemperatureRequest.temperatureDelta, targetedThermostat.settings.useCelsius) : 'Off';
                     }
 
                     this.apiRequestService.postContent<EcobeeThermostatCommand,EcobeeResponse>(Url.parse(`${this.ecobeeServerUrl}${this.ecobeeApiEndpoint}?format=json`),
