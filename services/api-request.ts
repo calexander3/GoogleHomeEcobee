@@ -66,7 +66,10 @@ export class ApiRequestService{
                     resolve(JSON.parse(responseString));
                 });
             });
-            request.on('error', (err: any) => reject(err));
+            request.on('error', (err: any) =>{
+                 console.error(err);
+                 reject(err);
+                });
             if (postDataString) {
                 request.write(postDataString)
             };
