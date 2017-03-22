@@ -1,10 +1,10 @@
 import * as express from 'express';
 import * as basicAuth from 'basic-auth';
-import { TemperatureService } from "../services/temperature";
+import { GetTemperatureService } from "../services/get-temperature";
 import { GoogleHomeRequest, Fulfillment } from "../models/google-home";
 
 export let router = express.Router();
-let temperatureService = new TemperatureService();
+let getTemperatureService = new GetTemperatureService();
 
 router.get('/', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   res.sendStatus(405);
@@ -31,31 +31,15 @@ router.post('/', (req: express.Request, res: express.Response, next: express.Nex
 
   let googleHomeRequest: GoogleHomeRequest = req.body;
   if (googleHomeRequest.result.action === 'GetTemperature') {
-    temperatureService.getThermostats()
-      .then(thermostats => {
+    getTemperatureService.getCurrentTemperature(googleHomeRequest.result.parameters.room)
+    .then(temperature => {
         let response: Fulfillment;
-        let roomTemps = <[{ name: string; temp: number; }]>[];
-
-        thermostats.forEach(thermostat => {
-          roomTemps.push({
-            name: thermostat.name,
-            temp: thermostat.runtime.actualTemperature / 10
-          });
-          thermostat.remoteSensors.forEach(sensor => {
-            roomTemps.push({
-              name: sensor.name,
-              temp: parseInt(sensor.capability.filter(c => c.type === 'temperature')[0].value) / 10
-            });
-          });
-        });
-
-        let targetRoomTemp = roomTemps.filter(rt => rt.name.toLowerCase() === googleHomeRequest.result.parameters.room.toLocaleLowerCase())[0];
-
-        if (targetRoomTemp) {
+      
+        if (temperature) {
           response = {
             source: 'GoogleHomeEcobee',
-            speech: `The temperature of the ${targetRoomTemp.name} sensor is ${targetRoomTemp.temp} degrees.`,
-            displayText: `The temperature of the ${targetRoomTemp.name} sensor is ${targetRoomTemp.temp} degrees.`
+            speech: `The temperature of the ${googleHomeRequest.result.parameters.room} sensor is ${temperature} degrees.`,
+            displayText: `The temperature of the ${googleHomeRequest.result.parameters.room} sensor is ${temperature} degrees.`
           }
         }
         else {
@@ -67,8 +51,10 @@ router.post('/', (req: express.Request, res: express.Response, next: express.Nex
         }
 
         res.send(response);
-      })
-      .catch(_ => res.sendStatus(500));
+    })
+    .catch(_ => res.sendStatus(500));
+
+      
   }
   else {
     console.error(`Action ${googleHomeRequest.result.action} not supported`)

@@ -1,9 +1,9 @@
 import * as express from 'express';
 import * as basicAuth from 'basic-auth';
-import { TemperatureService } from "../services/temperature";
+import { SetTemperatureService } from "../services/set-temperature";
 
 export let router = express.Router();
-let temperatureService = new TemperatureService();
+let temperatureService = new SetTemperatureService();
 
 router.get('/', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   res.sendStatus(405);

@@ -6,11 +6,11 @@ import { EcobeeThermostatCommand } from "../models/ecobee-thermostat-command";
 import { EcobeeResponse } from "../models/ecobee-response";
 import { ChangeTemperatureRequest } from "../models/change-temperature-request";
 
-export class TemperatureService extends ThermostatService {
+export class SetTemperatureService extends ThermostatService {
 
     private convertTemp(degrees: number, useCelsius: boolean): number {
         if(useCelsius) {
-            return Math.round(10 * (degrees* 9 / 5 + 32));
+            return Math.round(10 * (degrees * 9 / 5 + 32));
         }
         return degrees * 10;
     }
