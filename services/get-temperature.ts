@@ -10,7 +10,7 @@ export class GetTemperatureService extends ThermostatService {
         return degrees / 10;
     }
 
-    public getCurrentTemperature(sensorName: string): Promise<number> {
+    public GetCurrentTemperature(sensorName: string): Promise<number> {
         return new Promise((resolve:any, reject:any) => {
             this.getThermostats()
             .then(thermostats => {
@@ -36,7 +36,7 @@ export class GetTemperatureService extends ThermostatService {
         });
     }
 
-    public getDesiredTemperature(thermostatName: string): Promise<number[]> {
+    public GetDesiredTemperature(thermostatName: string): Promise<number[]> {
         return new Promise((resolve:any, reject:any) => {
             this.getThermostats()
             .then(thermostats => {

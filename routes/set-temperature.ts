@@ -28,5 +28,5 @@ router.post('/', (req: express.Request, res: express.Response, next: express.Nex
     return;
   }
 
-  temperatureService.setTemperature(req.body).then(_ => res.sendStatus(204)).catch(_ => res.sendStatus(500));
+  temperatureService.SetTemperature(req.body).then(_ => res.sendStatus(204)).catch(_ => res.sendStatus(500));
 });

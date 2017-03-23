@@ -15,12 +15,12 @@ export class SetTemperatureService extends ThermostatService {
         return degrees * 10;
     }
 
-    public setTemperature(setTemperatureRequest: SetTemperatureRequest): Promise<boolean> {
+    public SetTemperature(setTemperatureRequest: SetTemperatureRequest): Promise<boolean> {
         return new Promise((resolve:any, reject:any) => {
             this.getThermostats()
             .then(thermostats => {
                 let thermostatData = thermostats.filter(t => t.name.toLowerCase() === setTemperatureRequest.thermostat.toLowerCase())[0];
-                if(thermostatData){
+                if(thermostatData) {
                     let targetedThermostat = new Thermostat(thermostatData);
                     let coolOn = targetedThermostat.isCoolOn();
                     let heatOn = targetedThermostat.isHeatOn();
@@ -78,12 +78,12 @@ export class SetTemperatureService extends ThermostatService {
         });
     }
 
-    public changeTemperature(changeTemperatureRequest: ChangeTemperatureRequest): Promise<boolean> {
+    public ChangeTemperature(changeTemperatureRequest: ChangeTemperatureRequest): Promise<boolean> {
         return new Promise((resolve:any, reject:any) => {
             this.getThermostats()
             .then(thermostats => {
                 let thermostatData = thermostats.filter(t => t.name.toLowerCase() === changeTemperatureRequest.thermostat.toLowerCase())[0];
-                if(thermostatData){
+                if(thermostatData) {
                     let targetedThermostat = new Thermostat(thermostatData);
                     let coolOn = targetedThermostat.isCoolOn();
                     let heatOn = targetedThermostat.isHeatOn();

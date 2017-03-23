@@ -31,7 +31,7 @@ router.post('/', (req: express.Request, res: express.Response, next: express.Nex
 
   let googleHomeRequest: GoogleHomeRequest = req.body;
   if (googleHomeRequest.result.action === 'GetTemperature') {
-    getTemperatureService.getCurrentTemperature(googleHomeRequest.result.parameters.room)
+    getTemperatureService.GetCurrentTemperature(googleHomeRequest.result.parameters.room)
     .then(temperature => {
         let response: Fulfillment;
       
