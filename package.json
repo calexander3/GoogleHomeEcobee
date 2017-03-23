@@ -2,8 +2,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "./node_modules/.bin/forever start ./dist/bin/www.js",
-    "stop": "./node_modules/.bin/forever stop ./dist/bin/www.js",
+    "start": "./node_modules/.bin/forever ./dist/bin/www.js",
     "watch": "./node_modules/.bin/gulp watch",
     "postinstall": "./node_modules/.bin/gulp build"
   },
