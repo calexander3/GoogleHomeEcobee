@@ -12,29 +12,33 @@ export class ModeService extends ThermostatService {
             this.getThermostats()
             .then(thermostats => {
                 let thermostatData = thermostats.filter(t => t.name.toLowerCase() === changeModeRequest.thermostat.toLowerCase())[0];
-                if(thermostatData) {
+                if (thermostatData) {
                     let targetedThermostat = new Thermostat(thermostatData);
-                    this.apiRequestService.postContent<EcobeeThermostatCommand,EcobeeResponse>(Url.parse(`${this.ecobeeServerUrl}${this.ecobeeApiEndpoint}?format=json`),
-                    {
-                        selection: {
-                            selectionType: "thermostats",
-                            selectionMatch: targetedThermostat.identifier
-                        },
-                        thermostat: {
-                            settings: {
-                                hvacMode: changeModeRequest.hvacMode
+                    if (targetedThermostat.settings.hvacMode !== changeModeRequest.hvacMode) {
+                        this.apiRequestService.postContent<EcobeeThermostatCommand,EcobeeResponse>(Url.parse(`${this.ecobeeServerUrl}${this.ecobeeApiEndpoint}?format=json`),
+                        {
+                            selection: {
+                                selectionType: "thermostats",
+                                selectionMatch: targetedThermostat.identifier
+                            },
+                            thermostat: {
+                                settings: {
+                                    hvacMode: changeModeRequest.hvacMode
+                                }
                             }
-                        }
-                    },
-                    this.accessToken)
-                    .then(response => resolve(true))
-                    .catch(_ => reject(false));
+                        },
+                        this.accessToken)
+                        .then(response => resolve(true))
+                        .catch(_ => reject(false));
+                    }
+                    else {
+                        resolve(true)
+                    }
                 }
                 else {
                     reject(false);
                 }
             });
-
         });
     }
 }
