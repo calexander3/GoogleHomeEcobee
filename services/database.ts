@@ -21,9 +21,9 @@ export class DatabaseService {
                     client.release()
                     resolve(true);
                 })
-                .catch(e => {
+                .catch(err => {
                     client.release()
-                    console.error('update error', e.message, e.stack)
+                    console.error('update error', err.message, err.stack)
                     reject(false);
                 })
             });
@@ -38,9 +38,9 @@ export class DatabaseService {
                     client.release()
                     resolve(res.rows[0].Token);
                 })
-                .catch(e => {
+                .catch(err => {
                     client.release()
-                    console.error('select error', e.message, e.stack)
+                    console.error('select error', err.message, err.stack)
                     reject(false);
                 })
             });
