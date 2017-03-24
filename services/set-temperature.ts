@@ -71,7 +71,7 @@ export class SetTemperatureService extends ThermostatService {
                     .then(response => resolve(true))
                     .catch(_ => reject(false));
                 }
-                else{
+                else {
                     reject(false);
                 }
             });
@@ -134,7 +134,7 @@ export class SetTemperatureService extends ThermostatService {
                     .then(response => resolve(true))
                     .catch(_ => reject(false));
                 }
-                else{
+                else {
                     reject(false);
                 }
             });
