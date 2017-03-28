@@ -78,15 +78,15 @@ function handleGetDesiredTemperature(googleHomeRequest: GoogleHomeRequest): Prom
             if (temperatures && temperatures.length == 1) {
               response = {
                 source: 'GoogleHomeEcobee',
-                speech: `The ${googleHomeRequest.result.parameters.thermostatName} is set to ${temperatures[0]} degrees.`,
-                displayText: `The ${googleHomeRequest.result.parameters.thermostatName} is set to ${temperatures[0]} degrees.`
+                speech: `The ${googleHomeRequest.result.parameters.thermostatName} thermostat is set to ${temperatures[0]} degrees.`,
+                displayText: `The ${googleHomeRequest.result.parameters.thermostatName} thermostat is set to ${temperatures[0]} degrees.`
               }
             }
             else if (temperatures && temperatures.length == 2) {
               response = {
                 source: 'GoogleHomeEcobee',
-                speech: `The ${googleHomeRequest.result.parameters.thermostatName} is set to stay between ${temperatures[0]} and ${temperatures[1]} degrees.`,
-                displayText: `The ${googleHomeRequest.result.parameters.thermostatName} is set to stay between ${temperatures[0]} and ${temperatures[1]} degrees.`
+                speech: `The ${googleHomeRequest.result.parameters.thermostatName} thermostat is set to stay between ${temperatures[0]} and ${temperatures[1]} degrees.`,
+                displayText: `The ${googleHomeRequest.result.parameters.thermostatName} thermostat is set to stay between ${temperatures[0]} and ${temperatures[1]} degrees.`
               }
             }
             else {
