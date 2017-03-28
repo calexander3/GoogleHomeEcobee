@@ -1,6 +1,6 @@
 # Google Home Ecobee Integration
 
-The following are the simple requests meant to be made through Google Assistant, IFTTT, and Maker
+## The following are the simple requests meant to be made through Google Assistant, IFTTT, and Maker
 
 ### Set Temperature
 ```
@@ -43,12 +43,30 @@ hvacMode values are
 * off
 
 
-Below are requests intented to be made through Google Assistant actions from api.ai
+## Below are requests intented to be made through Google Assistant actions from api.ai
 
 ```
 POST /googlehome
 ```
+
+### Get temperature of particular sensor
+```json
+{
+  "result": {
+    "action": "GetTemperature",
+    "parameters": {
+      "sensorName": "Bedroom"
+    }
+}
 ```
-Action: 'GetTemperature'
-Parameters: room
+
+### Get desired temperature of particular thermostat
+```json
+{
+  "result": {
+    "action": "GetDesiredTemperature",
+    "parameters": {
+      "thermostatName": "Basement"
+    }
+}
 ```

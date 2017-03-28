@@ -51,8 +51,8 @@ export class GetTemperatureService extends ThermostatService {
                         reject([]);
                     }
                     else if (coolOn && heatOn) {
-                        resolve([this.convertTemp(targetedThermostat.runtime.desiredHeat, targetedThermostat.settings.useCelsius),
-                        this.convertTemp(targetedThermostat.runtime.desiredCool, targetedThermostat.settings.useCelsius)]);
+                        resolve([this.convertTemp(targetedThermostat.runtime.desiredCool, targetedThermostat.settings.useCelsius),
+                        this.convertTemp(targetedThermostat.runtime.desiredHeat, targetedThermostat.settings.useCelsius)]);
                     }
                     else if (heatOn) {
                         resolve([this.convertTemp(targetedThermostat.runtime.desiredHeat, targetedThermostat.settings.useCelsius)]);

@@ -24,7 +24,8 @@ export interface Result {
   metadata: Metadata;
 }
 export interface Parameters {
-  room: string;
+  sensorName: string;
+  thermostatName: string;
 }
 export interface Fulfillment {
   messages?: (MessagesEntity)[] | null;
