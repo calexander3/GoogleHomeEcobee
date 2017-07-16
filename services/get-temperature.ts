@@ -32,7 +32,7 @@ export class GetTemperatureService extends ThermostatService {
                 let targetRoomTemp = roomTemps.filter(rt => rt.name.toLowerCase() === sensorName.toLocaleLowerCase())[0];
                 resolve(targetRoomTemp.temp);
             })
-            .catch(_ => reject(null));
+            .catch(_ => reject(_));
         });
     }
 
@@ -68,7 +68,7 @@ export class GetTemperatureService extends ThermostatService {
                     reject(null);
                 }
             })
-            .catch(_ => reject(null));
+            .catch(_ => reject(_));
         });
     }
 }

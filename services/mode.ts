@@ -29,7 +29,7 @@ export class ModeService extends ThermostatService {
                         },
                         this.accessToken)
                         .then(response => resolve(true))
-                        .catch(_ => reject(false));
+                        .catch(_ => reject(_));
                     }
                     else {
                         resolve(true)

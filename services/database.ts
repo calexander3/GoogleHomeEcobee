@@ -24,7 +24,7 @@ export class DatabaseService {
                 .catch(err => {
                     client.release()
                     console.error('update error', err.message, err.stack)
-                    reject(false);
+                    reject(err);
                 })
             });
         });
@@ -41,7 +41,7 @@ export class DatabaseService {
                 .catch(err => {
                     client.release()
                     console.error('select error', err.message, err.stack)
-                    reject(false);
+                    reject(err);
                 })
             });
         });

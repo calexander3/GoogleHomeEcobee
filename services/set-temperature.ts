@@ -69,7 +69,7 @@ export class SetTemperatureService extends ThermostatService {
                     },
                     this.accessToken)
                     .then(response => resolve(true))
-                    .catch(_ => reject(false));
+                    .catch(_ => reject(_));
                 }
                 else {
                     reject(false);
@@ -132,7 +132,7 @@ export class SetTemperatureService extends ThermostatService {
                     },
                     this.accessToken)
                     .then(response => resolve(true))
-                    .catch(_ => reject(false));
+                    .catch(_ => reject(_));
                 }
                 else {
                     reject(false);

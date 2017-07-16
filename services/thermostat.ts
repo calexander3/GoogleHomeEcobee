@@ -36,15 +36,15 @@ export abstract  class ThermostatService {
                         .then(_ => resolve(true))
                         .catch(err =>{ 
                             console.error(err);
-                            resolve(false);
+                            reject(err);
                         });
                     })
                     .catch(err => {
-                        resolve(false);
+                        reject(err);
                     });
                 })
                 .catch(err => {
-                    resolve(false);
+                    reject(err);
                 });
             }
             else {
@@ -62,8 +62,8 @@ export abstract  class ThermostatService {
                     this.accessToken)
                 .then(thermostatResponse => {
                     resolve(thermostatResponse.thermostatList);
-                }).catch(err => resolve([]));;
-            }).catch(err => resolve([]));
+                }).catch(err => reject(err));
+            }).catch(err => reject(err));
         });
     }
 }
